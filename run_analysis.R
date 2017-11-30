@@ -32,7 +32,7 @@ activity_labels<-read.table("activity_labels.txt")
 cleandata_label<-lapply(cleandata$V1.1,function(x) as.character(activity_labels$V2[match(x, activity_labels$V1)]))
 ## replace the column into character accordingly
 cleandata$V1.1<-unlist(cleandata_label)
-
+                        
 ## find all the feature names based on look up table
 colnames(cleandata)<-gsub("V","",colnames(cleandata))
 cleandata_features<-lapply(colnames(cleandata), function(x) as.character(features$V2[match(x, features$V1)]))
