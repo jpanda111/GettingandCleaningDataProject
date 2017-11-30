@@ -1,6 +1,6 @@
-DATA DICTIONARY - 2012 - Human Activity Recognition Using Smartphones Data Set
+###DATA DICTIONARY - 2012 - Human Activity Recognition Using Smartphones Data Set
 
-Activity 1
+##Activity 1
   six activities that each person performed
     1 WALKING
     2 WALKING_UPSTAIRS
