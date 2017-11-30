@@ -1,4 +1,6 @@
-## go to test data directory
+## step 1
+
+##go to test data directory
 setwd("./test")
 ## merge X_test, y_test and subject_test
 X_test<-read.table("X_test.txt")
@@ -18,7 +20,9 @@ setwd("../")
 ## merge train data and test data
 mergedata<-rbind(mergetest,mergetrain)
 
-## get features info
+## step 2
+
+##get features info
 features<-read.table("features.txt" )
 ## get specific column index that contains mean() and std()
 cindex<-grepl("mean()|std()",features$V2)
@@ -26,21 +30,29 @@ cindex<-append(cindex,rep(TRUE,2),after=0)
 ## filter out data unneeded
 cleandata<-mergedata[,cindex]
 
+## step 3
+
 ## load activity label look up table
 activity_labels<-read.table("activity_labels.txt")
 ## find all activities based on look up table
 cleandata_label<-lapply(cleandata$V1.1,function(x) as.character(activity_labels$V2[match(x, activity_labels$V1)]))
 ## replace the column into character accordingly
 cleandata$V1.1<-unlist(cleandata_label)
-                        
+
+## step 4
+
 ## find all the feature names based on look up table
-colnames(cleandata)<-gsub("V","",colnames(cleandata))
-cleandata_features<-lapply(colnames(cleandata), function(x) as.character(features$V2[match(x, features$V1)]))
+cleandata_features<- colnames(cleandata) %>% gsub("V","") %>% lapply(function(x) as.character(features$V2[match(x, features$V1)]))
 cleandata_features[3]<-cleandata_features[1]
 cleandata_features[1:2]<-c("Subject","Activity")
 colnames(cleandata)<-unlist(cleandata_features)
 
-## make colnames more readable
+## step 5
+
+## group the data and take the average data for each (subject, activity) pair
 library(dplyr)
 final_data<-cleandata %>% group_by(Activity,Subject) %>% summarise_all(mean)
+
+## store the tidy data in .txt format
+write.table(final_data,"final_data.txt", row.names = FALSE)
 
