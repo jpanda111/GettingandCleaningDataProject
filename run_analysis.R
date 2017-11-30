@@ -1,7 +1,18 @@
+## downloading and unzip
+file<-"getdata_dataset.zip"
+if (!file.exists(file)){
+  url<-"https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip"
+  download.file(url, file, method="curl")
+}
+
+if (!file.exists("UCI HAR Dataset")) {
+  unzip(file)
+}
+
 ## step 1
 
 ##go to test data directory
-setwd("./test")
+setwd("./UCI HAR Dataset/test")
 ## merge X_test, y_test and subject_test
 X_test<-read.table("X_test.txt")
 y_test<-read.table("y_test.txt")
@@ -42,10 +53,16 @@ cleandata$V1.1<-unlist(cleandata_label)
 ## step 4
 
 ## find all the feature names based on look up table
-cleandata_features<- colnames(cleandata) %>% gsub("V","") %>% lapply(function(x) as.character(features$V2[match(x, features$V1)]))
+cleandata_features<- colnames(cleandata) %>% gsub("V","",.) %>% lapply(function(x) as.character(features$V2[match(x, features$V1)]))
 cleandata_features[3]<-cleandata_features[1]
 cleandata_features[1:2]<-c("Subject","Activity")
 colnames(cleandata)<-unlist(cleandata_features)
+
+## make feature names more readable
+colnames(cleandata)<- colnames(cleandata) %>% gsub("Acc", "Accelerometer",.) %>%
+  gsub("Gyro","Gyroscope",.) %>% gsub("BodyBody","Body",.) %>% gsub("Mag","Magnitude",.) %>%
+  gsub("^t","Time",.) %>% gsub("Freq","Frequency",.) %>% gsub("^f","Frequency",.) %>%
+  gsub("-mean()","Mean",.) %>% gsub("-std()","Std",.) %>% gsub("[-()]","",.)
 
 ## step 5
 
